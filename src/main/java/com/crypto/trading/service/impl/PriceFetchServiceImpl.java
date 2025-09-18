@@ -1,9 +1,12 @@
 package com.crypto.trading.service.impl;
 
+import com.crypto.trading.controller.TradeController;
 import com.crypto.trading.entity.PriceAggregate;
 import com.crypto.trading.repository.PriceAggregateRepository;
 import com.crypto.trading.service.PriceFetchService;
 import com.crypto.trading.util.FetchPriceUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,8 @@ import java.util.Set;
 
 @Service
 public class PriceFetchServiceImpl implements PriceFetchService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PriceFetchServiceImpl.class);
+
     private static final String BINANCE_SOURCE = "binance";
     private static final String HUOBI_SOURCE = "huobi";
 
@@ -120,7 +125,7 @@ public class PriceFetchServiceImpl implements PriceFetchService {
             }
 
         } catch (Exception ex) {
-            System.err.println("Price fetch error: " + ex);
+            LOGGER.error("Price fetch error: {}", ex.getMessage(), ex);
         }
     }
 }
