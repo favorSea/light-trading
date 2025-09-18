@@ -1,21 +1,14 @@
-package com.crypto.trading.entity;
+package com.crypto.trading.dto;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "wallet")
-public class Wallet {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class WalletDto {
     private Long id;
-
+    @JsonProperty("user_id")
     private Long userId;
-
     private String currency;
-
-    @Column(precision = 27, scale = 8)
     private BigDecimal balance;
 
     public Long getId() {

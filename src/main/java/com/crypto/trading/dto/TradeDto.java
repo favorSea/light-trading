@@ -1,26 +1,20 @@
-package com.crypto.trading.entity;
+package com.crypto.trading.dto;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
-@Entity
-@Table(name = "trade")
-public class Trade {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class TradeDto {
     private Long id;
-
+    @JsonProperty("user_id")
     private Long userId;
     private String symbol;
     private String side;
-    @Column(precision = 27, scale = 8)
     private BigDecimal price;
-    @Column(precision = 27, scale = 8)
     private BigDecimal quantity;
-    @Column(precision = 27, scale = 8)
     private BigDecimal total;
+    @JsonProperty("created_at")
     private Instant createdAt;
 
     public Long getId() {

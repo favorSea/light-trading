@@ -1,7 +1,10 @@
 package com.crypto.trading.controller;
 
+import com.crypto.trading.constant.Constant;
+import com.crypto.trading.dto.TradeDto;
 import com.crypto.trading.entity.Trade;
 import com.crypto.trading.service.TradeService;
+import com.crypto.trading.util.BuilderUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +21,9 @@ public class HistoryController {
     private TradeService tradeService;
 
     @GetMapping
-    public ResponseEntity<?> history(@RequestParam(required = false) Long userId) {
-        Long uid = (userId == null) ? 1L : userId;
-        List<Trade> h = tradeService.historyForUser(uid);
-        return ResponseEntity.ok(h);
+    public ResponseEntity<List<TradeDto>> history(@RequestParam(required = false) Long userId) {
+        Long uid = (userId == null) ? Constant.USER_ID : userId;
+        List<TradeDto> trades = tradeService.historyForUser(uid);
+        return ResponseEntity.ok(trades);
     }
 }

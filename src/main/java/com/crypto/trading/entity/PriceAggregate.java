@@ -1,7 +1,9 @@
 package com.crypto.trading.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
@@ -14,12 +16,17 @@ public class PriceAggregate {
     @Column(nullable = false, unique = true)
     private String symbol;
 
-    private Double bestAsk;
+    @JsonProperty("best_ask")
+    private BigDecimal bestAsk;
+    @JsonProperty("best_ask_src")
     private String bestAskSource;
 
-    private Double bestBid;
+    @JsonProperty("best_bid")
+    private BigDecimal bestBid;
+    @JsonProperty("best_bid_src")
     private String bestBidSource;
 
+    @JsonProperty("updated_at")
     private Instant updatedAt;
 
     public Long getId() {
@@ -38,11 +45,11 @@ public class PriceAggregate {
         this.symbol = symbol;
     }
 
-    public Double getBestAsk() {
+    public BigDecimal getBestAsk() {
         return bestAsk;
     }
 
-    public void setBestAsk(Double bestAsk) {
+    public void setBestAsk(BigDecimal bestAsk) {
         this.bestAsk = bestAsk;
     }
 
@@ -54,11 +61,11 @@ public class PriceAggregate {
         this.bestAskSource = bestAskSource;
     }
 
-    public Double getBestBid() {
+    public BigDecimal getBestBid() {
         return bestBid;
     }
 
-    public void setBestBid(Double bestBid) {
+    public void setBestBid(BigDecimal bestBid) {
         this.bestBid = bestBid;
     }
 
