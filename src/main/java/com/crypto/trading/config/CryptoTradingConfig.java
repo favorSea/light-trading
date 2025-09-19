@@ -74,4 +74,12 @@ public class CryptoTradingConfig {
         }});
         return map;
     }
+
+    public static String getBinanceUrl() {
+        return "https://api.binance.com/api/v3/ticker/bookTicker";
+    }
+
+    public static String getHuobiUrl() {
+        return "https://api.huobi.pro/market/tickers";
+    }
 }

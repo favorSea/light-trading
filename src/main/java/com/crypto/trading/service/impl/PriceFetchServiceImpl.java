@@ -1,6 +1,6 @@
 package com.crypto.trading.service.impl;
 
-import com.crypto.trading.controller.TradeController;
+import com.crypto.trading.config.CryptoTradingConfig;
 import com.crypto.trading.entity.PriceAggregate;
 import com.crypto.trading.repository.PriceAggregateRepository;
 import com.crypto.trading.service.PriceFetchService;
@@ -39,12 +39,12 @@ public class PriceFetchServiceImpl implements PriceFetchService {
     public void fetchPrices() {
         try {
             Mono<String> binanceMono = webClient.get()
-                    .uri("https://api.binance.com/api/v3/ticker/bookTicker")
+                    .uri(CryptoTradingConfig.getBinanceUrl())
                     .retrieve()
                     .bodyToMono(String.class);
 
             Mono<String> huobiMono = webClient.get()
-                    .uri("https://api.huobi.pro/market/tickers")
+                    .uri(CryptoTradingConfig.getHuobiUrl())
                     .retrieve()
                     .bodyToMono(String.class);
 
@@ -52,13 +52,13 @@ public class PriceFetchServiceImpl implements PriceFetchService {
             String huobiResp = huobiMono.block();
 
 
-            var binancePrices = FetchPriceUtils.parsePricesResponse(binResp, supportedSymbols, "askPrice",
+            var binancePrices = FetchPriceUtils.parseBinancePricesResponse(binResp, supportedSymbols, "askPrice",
                     "bidPrice");
             Map<String, BigDecimal> binAsk = binancePrices.asks();
             Map<String, BigDecimal> binBid = binancePrices.bids();
 
 
-            var huobiPrices = FetchPriceUtils.parsePricesResponse(huobiResp, supportedSymbols, "ask",
+            var huobiPrices = FetchPriceUtils.parseHuobiPricesResponse(huobiResp, supportedSymbols, "ask",
                     "bid");
             Map<String, BigDecimal> huobiAsk = huobiPrices.asks();
             Map<String, BigDecimal> huobiBid = huobiPrices.bids();

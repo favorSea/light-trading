@@ -20,9 +20,9 @@ public class FetchPriceUtils {
         return value;
     }
 
-    public static TradingPriceDto parsePricesResponse(String rawResponse, Set<String> supportedSymbols,
-                                                      String askPriceField,
-                                                      String bidPriceField)
+    public static TradingPriceDto parseBinancePricesResponse(String rawResponse, Set<String> supportedSymbols,
+                                                             String askPriceField,
+                                                             String bidPriceField)
             throws JsonProcessingException {
         Map<String, BigDecimal> asks = new HashMap<>();
         Map<String, BigDecimal> bids = new HashMap<>();
@@ -30,10 +30,35 @@ public class FetchPriceUtils {
         JsonNode jsonNodeRoot = MAPPER.readTree(rawResponse);
         if (jsonNodeRoot.isArray()) {
             for (JsonNode jsonNode : jsonNodeRoot) {
-                String symbol = jsonNode.path("symbol").asText();
+                String symbol = jsonNode.path("symbol").asText().toUpperCase();
+                if (supportedSymbols.contains(symbol.toUpperCase())) {
+                    BigDecimal ask = new BigDecimal(jsonNode.path(askPriceField).asText());
+                    BigDecimal bid = new BigDecimal(jsonNode.path(bidPriceField).asText());
+                    asks.put(symbol, ask);
+                    bids.put(symbol, bid);
+                }
+            }
+        }
+
+        return new TradingPriceDto(asks, bids);
+    }
+
+    public static TradingPriceDto parseHuobiPricesResponse(String rawResponse, Set<String> supportedSymbols,
+                                                      String askPriceField,
+                                                      String bidPriceField)
+            throws JsonProcessingException {
+        Map<String, BigDecimal> asks = new HashMap<>();
+        Map<String, BigDecimal> bids = new HashMap<>();
+
+        JsonNode jsonRoot = MAPPER.readTree(rawResponse);
+        JsonNode jsonNodeRoot = jsonRoot.path("data");
+        if (jsonNodeRoot.isArray()) {
+            for (JsonNode jsonNode : jsonNodeRoot) {
+                String symbol = jsonNode.path("symbol").asText().toUpperCase();
                 if (supportedSymbols.contains(symbol)) {
                     BigDecimal ask = new BigDecimal(jsonNode.path(askPriceField).asText());
                     BigDecimal bid = new BigDecimal(jsonNode.path(bidPriceField).asText());
+
                     asks.put(symbol, ask);
                     bids.put(symbol, bid);
                 }

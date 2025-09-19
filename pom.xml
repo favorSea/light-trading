@@ -12,33 +12,36 @@
         <spring.boot.version>3.2.0</spring.boot.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <spring.boot.version>3.5.5</spring.boot.version>
+        <h2.database.version>2.3.232</h2.database.version>
+        <jackson.databind.version>2.20.0</jackson.databind.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>3.5.5</version>
+            <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>3.5.5</version>
+            <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>2.3.232</version>
+            <version>${h2.database.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
-            <version>3.5.5</version>
+            <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.20.0</version>
+            <version>${jackson.databind.version}</version>
         </dependency>
     </dependencies>
 
@@ -47,12 +50,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version> <!-- Use the latest version -->
-                <configuration>
-                    <source>17</source> <!-- Adjust to your Java version, e.g., 17 or 21 -->
-                    <target>17</target> <!-- Adjust to your Java version -->
-                    <parameters>true</parameters> <!-- Enable parameter name retention -->
-                </configuration>
+                <version>3.8.1</version>
             </plugin>
         </plugins>
     </build></project>
