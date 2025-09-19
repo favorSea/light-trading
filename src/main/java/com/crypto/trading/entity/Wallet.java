@@ -1,5 +1,6 @@
 package com.crypto.trading.entity;
 
+import com.crypto.trading.constant.Currency;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -13,7 +14,7 @@ public class Wallet {
 
     private Long userId;
 
-    private String currency;
+    private Currency currency;
 
     @Column(precision = 27, scale = 8)
     private BigDecimal balance;
@@ -34,11 +35,11 @@ public class Wallet {
         this.userId = userId;
     }
 
-    public String getCurrency() {
+    public Currency getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(Currency currency) {
         this.currency = currency;
     }
 

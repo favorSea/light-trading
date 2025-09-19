@@ -33,7 +33,7 @@ public class TradeController {
             LOGGER.info("Received trade request: {}", req);
             ValidateUtils.verifyTradeRequest(req, supportedSymbols);
             Long uid = (req.getUserId() == null) ? Constant.USER_ID : req.getUserId();
-            TradeResponse resp = tradeService.executeTrade(uid, req.getSymbol().toUpperCase(), req.getSide(),
+            TradeResponse resp = tradeService.executeTrade(uid, req.getSymbol(), req.getSide(),
                     req.getQuantity());
             return ResponseEntity.ok(resp);
         } catch (Exception ex) {

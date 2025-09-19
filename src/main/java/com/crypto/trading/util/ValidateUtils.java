@@ -8,11 +8,11 @@ import java.util.Set;
 
 public class ValidateUtils {
     public static void verifyTradeRequest(TradeRequest req, Set<String> supportedSymbols) throws InvalidRequestException {
-        if (req.getSymbol() == null || !supportedSymbols.contains(req.getSymbol().toUpperCase())) {
+        if (req.getSymbol() == null || !supportedSymbols.contains(req.getSymbol().name())) {
             throw new InvalidRequestException("Invalid symbol " + req.getSymbol());
         }
-        if (!"BUY".equals(req.getSide()) && !"SELL".equals(req.getSide())) {
-            throw new InvalidRequestException("Invalid side " + req.getSide());
+        if (req.getSide() == null) {
+            throw new InvalidRequestException("Invalid side ");
         }
         if (req.getQuantity() == null || req.getQuantity().compareTo(BigDecimal.ZERO) < 1) {
             throw new InvalidRequestException("Invalid quantity " + req.getQuantity());

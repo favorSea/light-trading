@@ -1,6 +1,9 @@
 package com.crypto.trading.config;
 
 import com.crypto.trading.constant.Constant;
+import com.crypto.trading.constant.Currency;
+import com.crypto.trading.constant.Symbol;
+import com.crypto.trading.constant.TradingSide;
 import com.crypto.trading.dto.TradingPairDto;
 import com.crypto.trading.entity.Wallet;
 import com.crypto.trading.repository.WalletRepository;
@@ -24,19 +27,19 @@ public class CryptoTradingConfig {
             Wallet usdtWallet = new Wallet();
             usdtWallet.setUserId(Constant.USER_ID);
             usdtWallet.setBalance(new BigDecimal(50000));
-            usdtWallet.setCurrency("USDT");
+            usdtWallet.setCurrency(Currency.USDT);
             walletRepository.save(usdtWallet);
 
             Wallet btcWallet = new Wallet();
             btcWallet.setUserId(Constant.USER_ID);
             btcWallet.setBalance(BigDecimal.ZERO);
-            btcWallet.setCurrency("BTC");
+            btcWallet.setCurrency(Currency.BTC);
             walletRepository.save(btcWallet);
 
             Wallet ethWallet = new Wallet();
             ethWallet.setUserId(Constant.USER_ID);
             ethWallet.setBalance(BigDecimal.ZERO);
-            ethWallet.setCurrency("ETH");
+            ethWallet.setCurrency(Currency.ETH);
             walletRepository.save(ethWallet);
 
         };
@@ -55,19 +58,19 @@ public class CryptoTradingConfig {
 
     @Bean
     public Set<String> supportedSymbols() {
-        return Set.of("ETHUSDT", "BTCUSDT");
+        return Set.of(Symbol.ETHUSDT.name(), Symbol.BTCUSDT.name());
     }
 
     @Bean
-    public Map<String, Map<String, TradingPairDto>> tradingPairsConfig() {
-        Map<String, Map<String, TradingPairDto>> map = new HashMap<>();
-        map.put("BUY", new HashMap<>() {{
-            put("ETHUSDT", new TradingPairDto("USDT", "ETH"));
-            put("BTCUSDT", new TradingPairDto("USDT", "BTC"));
+    public Map<TradingSide, Map<Symbol, TradingPairDto>> tradingPairsConfig() {
+        Map<TradingSide, Map<Symbol, TradingPairDto>> map = new HashMap<>();
+        map.put(TradingSide.SELL, new HashMap<>() {{
+            put(Symbol.BTCUSDT, new TradingPairDto(Currency.BTC, Currency.USDT));
+            put(Symbol.ETHUSDT, new TradingPairDto(Currency.ETH, Currency.USDT));
         }});
-        map.put("SELL", new HashMap<>() {{
-            put("ETHUSDT", new TradingPairDto("ETH", "USDT"));
-            put("BTCUSDT", new TradingPairDto("BTC", "USDT"));
+        map.put(TradingSide.BUY, new HashMap<>() {{
+            put(Symbol.BTCUSDT, new TradingPairDto(Currency.USDT, Currency.BTC));
+            put(Symbol.ETHUSDT, new TradingPairDto(Currency.USDT, Currency.ETH));
         }});
         return map;
     }

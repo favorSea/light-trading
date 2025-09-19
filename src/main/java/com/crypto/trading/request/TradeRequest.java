@@ -1,26 +1,29 @@
 package com.crypto.trading.request;
 
+import com.crypto.trading.constant.Symbol;
+import com.crypto.trading.constant.TradingSide;
+
 import java.math.BigDecimal;
 
 public class TradeRequest {
-    private String symbol;
-    private String side;
+    private Symbol symbol;
+    private TradingSide side;
     private BigDecimal quantity;
     private Long userId;
 
-    public String getSymbol() {
+    public Symbol getSymbol() {
         return symbol;
     }
 
-    public void setSymbol(String symbol) {
+    public void setSymbol(Symbol symbol) {
         this.symbol = symbol;
     }
 
-    public String getSide() {
+    public TradingSide getSide() {
         return side;
     }
 
-    public void setSide(String side) {
+    public void setSide(TradingSide side) {
         this.side = side;
     }
 
@@ -46,7 +49,6 @@ public class TradeRequest {
                 "symbol='" + symbol + '\'' +
                 ", side='" + side + '\'' +
                 ", quantity=" + quantity +
-                ", userId=" + userId +
                 '}';
     }
 }

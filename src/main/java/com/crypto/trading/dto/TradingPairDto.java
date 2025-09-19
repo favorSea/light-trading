@@ -1,4 +1,6 @@
 package com.crypto.trading.dto;
 
-public record TradingPairDto(String from, String to) {
+import com.crypto.trading.constant.Currency;
+
+public record TradingPairDto(Currency from, Currency to) {
 }

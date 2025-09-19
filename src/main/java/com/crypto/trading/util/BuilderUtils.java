@@ -39,7 +39,7 @@ public class BuilderUtils {
         WalletDto dto = new WalletDto();
         dto.setId(wallet.getId());
         dto.setUserId(wallet.getUserId());
-        dto.setCurrency(wallet.getCurrency());
+        dto.setCurrency(wallet.getCurrency().name());
         dto.setBalance(wallet.getBalance());
         return dto;
     }
