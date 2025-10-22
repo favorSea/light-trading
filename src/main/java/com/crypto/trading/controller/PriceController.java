@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/price")
 public class PriceController {
@@ -15,9 +17,15 @@ public class PriceController {
     private PriceService priceService;
 
     @GetMapping("/latest")
-    public ResponseEntity<?> latest(@RequestParam String symbol) {
+    public ResponseEntity<?> latest(@RequestParam("symbol") String symbol) {
         return priceService.getLatest(symbol.toUpperCase())
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<?>> getPriceHistory(@RequestParam("symbol") String symbol) {
+        var res = priceService.getHistory(symbol.toUpperCase());
+        return ResponseEntity.ok(res);
     }
 }

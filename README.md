@@ -198,6 +198,49 @@ curl --location 'http://localhost:8080/api/price/latest?symbol=BTCUSDT'
 
 ---
 
+### 4. `GET /api/price/latest?symbol={symbol}`
+Get the latest aggregated best bid/ask for a symbol.
+
+**Request**
+```bash
+curl --location 'http://localhost:8080/api/price/history?symbol=BTCUSDT'
+```
+
+**Response (200 OK)**
+```json
+[
+  {
+    "symbol": "ETHUSDT",
+    "created_at": "2025-10-22T09:46:30.762160Z",
+    "ask": 3832.89,
+    "ask_src": "binance",
+    "bid": 3833.18,
+    "bid_src": "huobi"
+  },
+  {
+    "symbol": "ETHUSDT",
+    "created_at": "2025-10-22T09:46:20.595227Z",
+    "ask": 3830.21,
+    "ask_src": "binance",
+    "bid": 3830.33,
+    "bid_src": "huobi"
+  }
+]
+```
+
+**Field descriptions**
+| Field | Type | Description |
+|---|---:|---|
+| `id` | integer | Price record id |
+| `symbol` | string | Trading pair |
+| `ask` | number | best ask price |
+| `ask_src` | string | Source/exchange of ask (observed `binance`) |
+| `bid` | number | best bid price |
+| `bid_src` | string | Source/exchange of bid (observed `binance`) |
+| `created_at` | string (ISO 8601) | Creation timestamp (UTC `Z`) |
+
+---
+
 ## Notes & Observations
 - All timestamps in the samples are ISO 8601 with a `Z` suffix (UTC).
 - Numeric fields use high-precision decimals (prices, quantities, balances).

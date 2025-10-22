@@ -2,6 +2,8 @@ package com.crypto.trading.util;
 
 import com.crypto.trading.dto.TradeDto;
 import com.crypto.trading.dto.WalletDto;
+import com.crypto.trading.entity.PriceAggregate;
+import com.crypto.trading.entity.PriceHistory;
 import com.crypto.trading.entity.Trade;
 import com.crypto.trading.entity.Wallet;
 import org.springframework.util.CollectionUtils;
@@ -54,5 +56,16 @@ public class BuilderUtils {
             dtoList.add(dto);
         }
         return dtoList;
+    }
+
+    public static PriceHistory convertPriceAggregate2PriceHistory(PriceAggregate ag) {
+        PriceHistory priceHistory = new PriceHistory();
+        priceHistory.setSymbol(ag.getSymbol());
+        priceHistory.setAsk(ag.getBestAsk());
+        priceHistory.setAskSource(ag.getBestAskSource());
+        priceHistory.setBid(ag.getBestBid());
+        priceHistory.setBidSource(ag.getBestBidSource());
+        priceHistory.setCreatedAt(ag.getUpdatedAt());
+        return priceHistory;
     }
 }

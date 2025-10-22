@@ -1,7 +1,10 @@
 package com.crypto.trading.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -10,9 +13,6 @@ import java.time.Instant;
 @Table(name = "price_aggregate")
 public class PriceAggregate {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(nullable = false, unique = true)
     private String symbol;
 
@@ -28,14 +28,6 @@ public class PriceAggregate {
 
     @JsonProperty("updated_at")
     private Instant updatedAt;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getSymbol() {
         return symbol;

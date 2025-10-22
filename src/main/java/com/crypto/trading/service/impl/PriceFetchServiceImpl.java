@@ -4,8 +4,8 @@ import com.crypto.trading.dto.PriceDataDto;
 import com.crypto.trading.dto.PriceWitSource;
 import com.crypto.trading.entity.PriceAggregate;
 import com.crypto.trading.provider.PriceProvider;
-import com.crypto.trading.repository.PriceAggregateRepository;
 import com.crypto.trading.service.PriceFetchService;
+import com.crypto.trading.service.PriceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class PriceFetchServiceImpl implements PriceFetchService {
     private WebClient webClient;
 
     @Autowired
-    private PriceAggregateRepository priceRepo;
+    private PriceService priceService;
 
     @Autowired
     private Set<String> supportedSymbols;
@@ -75,7 +75,7 @@ public class PriceFetchServiceImpl implements PriceFetchService {
                     ag.setBestBidSource(bestBidSource);
                 }
                 ag.setUpdatedAt(Instant.now());
-                priceRepo.save(ag);
+                priceService.saveLastestPriceAndLog(ag);
             }
 
         } catch (Exception ex) {
