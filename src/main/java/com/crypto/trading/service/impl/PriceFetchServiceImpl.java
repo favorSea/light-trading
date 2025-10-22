@@ -1,29 +1,28 @@
 package com.crypto.trading.service.impl;
 
-import com.crypto.trading.config.CryptoTradingConfig;
+import com.crypto.trading.dto.PriceDataDto;
+import com.crypto.trading.dto.PriceWitSource;
 import com.crypto.trading.entity.PriceAggregate;
+import com.crypto.trading.provider.PriceProvider;
 import com.crypto.trading.repository.PriceAggregateRepository;
 import com.crypto.trading.service.PriceFetchService;
-import com.crypto.trading.util.FetchPriceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Map;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 @Service
 public class PriceFetchServiceImpl implements PriceFetchService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PriceFetchServiceImpl.class);
-
-    private static final String BINANCE_SOURCE = "binance";
-    private static final String HUOBI_SOURCE = "huobi";
 
     @Autowired
     private WebClient webClient;
@@ -34,84 +33,39 @@ public class PriceFetchServiceImpl implements PriceFetchService {
     @Autowired
     private Set<String> supportedSymbols;
 
+    @Autowired
+    private List<PriceProvider> priceProviders;
+
     @Scheduled(fixedDelay = 10_000)
     @Override
     public void fetchPrices() {
         try {
-            Mono<String> binanceMono = webClient.get()
-                    .uri(CryptoTradingConfig.getBinanceUrl())
-                    .retrieve()
-                    .bodyToMono(String.class);
-
-            Mono<String> huobiMono = webClient.get()
-                    .uri(CryptoTradingConfig.getHuobiUrl())
-                    .retrieve()
-                    .bodyToMono(String.class);
-
-            String binResp = binanceMono.block();
-            String huobiResp = huobiMono.block();
-
-
-            var binancePrices = FetchPriceUtils.parseBinancePricesResponse(binResp, supportedSymbols, "askPrice",
-                    "bidPrice");
-            Map<String, BigDecimal> binAsk = binancePrices.asks();
-            Map<String, BigDecimal> binBid = binancePrices.bids();
-
-
-            var huobiPrices = FetchPriceUtils.parseHuobiPricesResponse(huobiResp, supportedSymbols, "ask",
-                    "bid");
-            Map<String, BigDecimal> huobiAsk = huobiPrices.asks();
-            Map<String, BigDecimal> huobiBid = huobiPrices.bids();
+            List<PriceDataDto> priceDataDtoList = new LinkedList<>();
+            for (PriceProvider priceProvider : priceProviders) {
+               var priceDataDto = priceProvider.getLatestPrice();
+               if (priceDataDto != null) {
+                   priceDataDtoList.add(priceDataDto);
+               }
+            }
 
             for (String symbol : supportedSymbols) {
-                BigDecimal bBid = binBid.get(symbol);
-                BigDecimal hBid = huobiBid.get(symbol);
+                var bestAskPrice = priceDataDtoList.stream().filter(p -> p.getAsks().get(symbol) != null)
+                        .map(p -> new PriceWitSource(p.getAsks().get(symbol), p.getSource()))
+                        .min(Comparator.comparing(PriceWitSource::price))
+                        .get();
 
-                BigDecimal bestAsk = null;
-                String bestAskSource = null;
-                BigDecimal bestBid = null;
-                String bestBidSource = null;
+                var bestBidPrice = priceDataDtoList.stream().filter(p -> p.getBids().get(symbol) != null)
+                        .map(p -> new PriceWitSource(p.getBids().get(symbol), p.getSource()))
+                        .max(Comparator.comparing(PriceWitSource::price))
+                        .get();
 
-                BigDecimal bAsk = binAsk.get(symbol);
-                BigDecimal hAsk = huobiAsk.get(symbol);
-                if (bAsk != null && hAsk != null) {
-                    if (bAsk.compareTo(hAsk) <= 0) {
-                        bestAsk = bAsk;
-                        bestAskSource = BINANCE_SOURCE;
-                    } else {
-                        bestAsk = hAsk;
-                        bestAskSource = HUOBI_SOURCE;
-                    }
-                } else if (bAsk != null) {
-                    bestAsk = bAsk;
-                    bestAskSource = BINANCE_SOURCE;
-                } else if (hAsk != null) {
-                    bestAsk = hAsk;
-                    bestAskSource = HUOBI_SOURCE;
-                }
+                BigDecimal bestAsk = bestAskPrice.price();
+                String bestAskSource = bestAskPrice.source();
+                BigDecimal bestBid = bestBidPrice.price();
+                String bestBidSource = bestBidPrice.source();
 
-                if (bBid != null && hBid != null) {
-                    if (bBid.compareTo(hBid) >= 0) {
-                        bestBid = bBid;
-                        bestBidSource = BINANCE_SOURCE;
-                    } else {
-                        bestBid = hBid;
-                        bestBidSource = HUOBI_SOURCE;
-                    }
-
-                } else if (bBid != null) {
-                    bestBid = bBid;
-                    bestBidSource = BINANCE_SOURCE;
-                } else if (hBid != null) {
-                    bestBid = hBid;
-                    bestBidSource = HUOBI_SOURCE;
-                }
-
-                PriceAggregate ag = priceRepo.findBySymbol(symbol).orElseGet(() -> {
-                    PriceAggregate p = new PriceAggregate();
-                    p.setSymbol(symbol);
-                    return p;
-                });
+                PriceAggregate ag = new PriceAggregate();
+                ag.setSymbol(symbol);
                 if (bestAsk != null) {
                     ag.setBestAsk(bestAsk);
                     ag.setBestAskSource(bestAskSource);
