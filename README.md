@@ -198,8 +198,8 @@ curl --location 'http://localhost:8080/api/price/latest?symbol=BTCUSDT'
 
 ---
 
-### 4. `GET /api/price/latest?symbol={symbol}`
-Get the latest aggregated best bid/ask for a symbol.
+### 5. `GET /api/price/history?symbol={symbol}`
+Get the history of bid/ask records for a symbol.
 
 **Request**
 ```bash
