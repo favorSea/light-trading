@@ -21,8 +21,8 @@ public class HistoryController {
     private TradeService tradeService;
 
     @GetMapping
-    public ResponseEntity<List<TradeDto>> history(@RequestParam(required = false) Long userId) {
-        Long uid = (userId == null) ? Constant.USER_ID : userId;
+    public ResponseEntity<List<TradeDto>> history() {
+        Long uid = Constant.USER_ID;
         List<TradeDto> trades = tradeService.historyForUser(uid);
         return ResponseEntity.ok(trades);
     }
