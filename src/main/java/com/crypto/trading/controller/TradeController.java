@@ -3,12 +3,12 @@ package com.crypto.trading.controller;
 import com.crypto.trading.request.TradeRequest;
 import com.crypto.trading.response.TradeResponse;
 import com.crypto.trading.service.TradeService;
+import com.crypto.trading.util.UserUtils;
 import com.crypto.trading.util.ValidateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +31,8 @@ public class TradeController {
         try {
             LOGGER.info("Received trade request: {}", req);
             ValidateUtils.verifyTradeRequest(req, supportedSymbols);
-            String uid = SecurityContextHolder.getContext().getAuthentication().getName();
-            TradeResponse resp = tradeService.executeTrade(Long.valueOf(uid), req.getSymbol(), req.getSide(),
+            var uid = UserUtils.getUserId();
+            TradeResponse resp = tradeService.executeTrade(uid, req.getSymbol(), req.getSide(),
                     req.getQuantity());
             return ResponseEntity.ok(resp);
         } catch (Exception ex) {

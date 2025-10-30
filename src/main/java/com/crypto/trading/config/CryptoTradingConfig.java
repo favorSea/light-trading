@@ -24,23 +24,25 @@ public class CryptoTradingConfig {
     @Bean
     public CommandLineRunner setupWallet(WalletRepository walletRepository) {
         return args -> {
-            Wallet usdtWallet = new Wallet();
-            usdtWallet.setUserId(Constant.USER_ID);
-            usdtWallet.setBalance(new BigDecimal(50000));
-            usdtWallet.setCurrency(Currency.USDT);
-            walletRepository.save(usdtWallet);
+            for (long i = 0; i < 10; i++) {
+                Wallet usdtWallet = new Wallet();
+                usdtWallet.setUserId(i);
+                usdtWallet.setBalance(new BigDecimal(50000));
+                usdtWallet.setCurrency(Currency.USDT);
+                walletRepository.save(usdtWallet);
 
-            Wallet btcWallet = new Wallet();
-            btcWallet.setUserId(Constant.USER_ID);
-            btcWallet.setBalance(BigDecimal.ZERO);
-            btcWallet.setCurrency(Currency.BTC);
-            walletRepository.save(btcWallet);
+                Wallet btcWallet = new Wallet();
+                btcWallet.setUserId(i);
+                btcWallet.setBalance(BigDecimal.ZERO);
+                btcWallet.setCurrency(Currency.BTC);
+                walletRepository.save(btcWallet);
 
-            Wallet ethWallet = new Wallet();
-            ethWallet.setUserId(Constant.USER_ID);
-            ethWallet.setBalance(BigDecimal.ZERO);
-            ethWallet.setCurrency(Currency.ETH);
-            walletRepository.save(ethWallet);
+                Wallet ethWallet = new Wallet();
+                ethWallet.setUserId(i);
+                ethWallet.setBalance(BigDecimal.ZERO);
+                ethWallet.setCurrency(Currency.ETH);
+                walletRepository.save(ethWallet);
+            }
 
         };
     }

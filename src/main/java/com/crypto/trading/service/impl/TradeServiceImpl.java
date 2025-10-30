@@ -92,7 +92,7 @@ public class TradeServiceImpl implements TradeService {
             tradeRepo.save(trade);
 
             return new TradeResponse(trade.getId(), trade.getSymbol(), trade.getSide(), trade.getPrice(),
-                    trade.getQuantity(), trade.getTotal(), trade.getCreatedAt().toString());
+                    trade.getQuantity(), trade.getTotal(), trade.getCreatedAt().toString(), userId);
         } catch (Exception e) {
             LOGGER.error("executeTrade got error: ", e);
             throw new Exception(e);

@@ -6,9 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -34,11 +37,17 @@ public class AuthController {
         } catch (AuthenticationException ex) {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
+
         UserDetails ud = userDetailsService.loadUserByUsername(req.getUsername());
-        String token = jwtUtil.generateToken(ud.getUsername());
+
+        List<String> roles = ud.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+        String token = jwtUtil.generateToken(ud.getUsername(), roles);
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
+    // TODO
     @Data
     public static class AuthRequest {
         private String username;
